@@ -104,7 +104,7 @@ const Hero = () => {
               <div className="flex items-center gap-6 pt-2">
                 <div className="flex items-center gap-3">
                   <a
-                    href="https://linkedin.com/in/khushvantjadhao"
+                    href="https://www.linkedin.com/in/khushvantjadhao"
                     target="_blank"
                     rel="noreferrer"
                     className="w-10 h-10 rounded-full bg-blue-50 dark:bg-blue-950/50 text-[#0A66C2] flex items-center justify-center border border-blue-200 dark:border-blue-800/40 hover:scale-110 transition-transform"
@@ -113,7 +113,7 @@ const Hero = () => {
                     <FaLinkedin className="w-5 h-5" />
                   </a>
                   <a
-                    href="https://github.com/khushvantjadhao"
+                    href="https://github.com/khushavnt-cognitiona"
                     target="_blank"
                     rel="noreferrer"
                     className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 flex items-center justify-center border border-slate-200 dark:border-slate-700 hover:scale-110 transition-transform"
@@ -122,7 +122,7 @@ const Hero = () => {
                     <FaGithub className="w-5 h-5" />
                   </a>
                   <a
-                    href="https://instagram.com"
+                    href="https://www.instagram.com/engineer_khushvant/"
                     target="_blank"
                     rel="noreferrer"
                     className="w-10 h-10 rounded-full bg-pink-50 dark:bg-pink-950/50 text-[#E4405F] flex items-center justify-center border border-pink-200 dark:border-pink-800/40 hover:scale-110 transition-transform"
@@ -131,7 +131,7 @@ const Hero = () => {
                     <FaInstagram className="w-5 h-5" />
                   </a>
                   <a
-                    href="mailto:khushvantjadhao@gmail.com"
+                    href="mailto:khusujadhao329@gmail.com"
                     className="w-10 h-10 rounded-full bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 flex items-center justify-center border border-indigo-200 dark:border-indigo-800/40 hover:scale-110 transition-transform"
                     aria-label="Email"
                   >

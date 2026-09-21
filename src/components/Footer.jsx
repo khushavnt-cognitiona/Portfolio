@@ -7,6 +7,7 @@ import {
   FaGitAlt, 
   FaLinkedin, 
   FaGithub, 
+  FaInstagram,
   FaServer 
 } from 'react-icons/fa';
 import { 
@@ -161,7 +162,7 @@ const Footer = () => {
 
             <div className="space-y-2.5 text-xs sm:text-sm">
               <a
-                href="https://linkedin.com/in/khushvantjadhao"
+                href="https://www.linkedin.com/in/khushvantjadhao"
                 target="_blank"
                 rel="noreferrer"
                 className="flex items-center gap-2.5 p-2.5 rounded-xl bg-slate-900/80 hover:bg-blue-950/40 border border-slate-800 hover:border-blue-700/50 text-slate-300 hover:text-blue-300 transition-all duration-200 group"
@@ -172,7 +173,7 @@ const Footer = () => {
               </a>
 
               <a
-                href="https://github.com/khushvantjadhao"
+                href="https://github.com/khushavnt-cognitiona"
                 target="_blank"
                 rel="noreferrer"
                 className="flex items-center gap-2.5 p-2.5 rounded-xl bg-slate-900/80 hover:bg-slate-800 border border-slate-800 hover:border-slate-600 text-slate-300 hover:text-white transition-all duration-200 group"
@@ -183,11 +184,22 @@ const Footer = () => {
               </a>
 
               <a
-                href="mailto:khushvantjadhao@gmail.com"
+                href="https://www.instagram.com/engineer_khushvant/"
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center gap-2.5 p-2.5 rounded-xl bg-slate-900/80 hover:bg-pink-950/40 border border-slate-800 hover:border-pink-700/50 text-slate-300 hover:text-pink-300 transition-all duration-200 group"
+              >
+                <FaInstagram className="w-4 h-4 text-pink-400 group-hover:scale-110 transition-transform" />
+                <span className="font-medium">Instagram</span>
+                <ExternalLink className="w-3 h-3 ml-auto text-slate-500 group-hover:text-pink-400" />
+              </a>
+
+              <a
+                href="mailto:khusujadhao329@gmail.com"
                 className="flex items-center gap-2.5 p-2.5 rounded-xl bg-slate-900/80 hover:bg-indigo-950/40 border border-slate-800 hover:border-indigo-700/50 text-slate-300 hover:text-indigo-300 transition-all duration-200 group"
               >
                 <Mail className="w-4 h-4 text-indigo-400 group-hover:scale-110 transition-transform" />
-                <span className="font-medium truncate">khushvantjadhao@gmail.com</span>
+                <span className="font-medium truncate">khusujadhao329@gmail.com</span>
                 <ExternalLink className="w-3 h-3 ml-auto text-slate-500 group-hover:text-indigo-400 shrink-0" />
               </a>
             </div>

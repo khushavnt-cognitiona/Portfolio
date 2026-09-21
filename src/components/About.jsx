@@ -1,9 +1,39 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { UserCheck, GraduationCap, BookOpen, Briefcase, Award, Sparkles, Heart, Rocket, Code2 } from 'lucide-react';
+import { UserCheck, GraduationCap, BookOpen, Briefcase, Award, Sparkles, Heart, Rocket, Code2, Loader2 } from 'lucide-react';
+import { fetchEducation, fetchCertifications } from '../services/api';
+
+const educationIconMap = {
+  GraduationCap: GraduationCap,
+  BookOpen: BookOpen,
+  Briefcase: Briefcase,
+  Award: Award
+};
 
 const About = () => {
   const [activeTab, setActiveTab] = useState('education');
+  const [educationList, setEducationList] = useState([]);
+  const [certificationsList, setCertificationsList] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadAboutData = async () => {
+      try {
+        setLoading(true);
+        const [eduData, certData] = await Promise.all([
+          fetchEducation(),
+          fetchCertifications()
+        ]);
+        setEducationList(eduData || []);
+        setCertificationsList(certData || []);
+      } catch (err) {
+        console.error('Failed to fetch education/certification data:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadAboutData();
+  }, []);
 
   return (
     <section id="about" className="py-20 relative">
@@ -159,66 +189,39 @@ const About = () => {
               {/* Tab Content: Education */}
               {activeTab === 'education' && (
                 <div className="space-y-4">
-                  {/* Card 1 */}
-                  <div className="flex items-start gap-4 p-4 rounded-2xl bg-purple-50/50 dark:bg-purple-950/20 border border-purple-100 dark:border-purple-900/30">
-                    <div className="p-3 bg-purple-600 text-white rounded-xl shrink-0 mt-0.5 shadow-sm">
-                      <GraduationCap className="w-5 h-5" />
+                  {loading && (
+                    <div className="flex items-center justify-center py-6 text-indigo-600 dark:text-indigo-400 gap-2">
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                      <span className="text-xs font-medium text-slate-500">Loading education from backend...</span>
                     </div>
-                    <div>
-                      <h4 className="font-bold text-slate-900 dark:text-white text-sm sm:text-base">
-                        MCA (AI & ML)
-                      </h4>
-                      <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
-                        Chandigarh University (Completed)
-                      </p>
-                    </div>
-                  </div>
+                  )}
 
-                  {/* Card 2 */}
-                  <div className="flex items-start gap-4 p-4 rounded-2xl bg-indigo-50/50 dark:bg-indigo-950/20 border border-indigo-100 dark:border-indigo-900/30">
-                    <div className="p-3 bg-indigo-600 text-white rounded-xl shrink-0 mt-0.5 shadow-sm">
-                      <BookOpen className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <h4 className="font-bold text-slate-900 dark:text-white text-sm sm:text-base">
-                        B.Voc in Software Development
-                      </h4>
-                      <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
-                        Sant Gadge Baba Amravati University (2022)
-                      </p>
-                    </div>
-                  </div>
+                  {!loading && educationList.map((item, idx) => {
+                    const IconComponent = educationIconMap[item.icon] || GraduationCap;
+                    const cardBgStyles = [
+                      "bg-purple-50/50 dark:bg-purple-950/20 border-purple-100 dark:border-purple-900/30",
+                      "bg-indigo-50/50 dark:bg-indigo-950/20 border-indigo-100 dark:border-indigo-900/30",
+                      "bg-blue-50/50 dark:bg-blue-950/20 border-blue-100 dark:border-blue-900/30",
+                      "bg-slate-50 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700"
+                    ];
+                    const cardStyle = cardBgStyles[idx % cardBgStyles.length];
 
-                  {/* Card 3 */}
-                  <div className="flex items-start gap-4 p-4 rounded-2xl bg-blue-50/50 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900/30">
-                    <div className="p-3 bg-blue-600 text-white rounded-xl shrink-0 mt-0.5 shadow-sm">
-                      <Briefcase className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <h4 className="font-bold text-slate-900 dark:text-white text-sm sm:text-base">
-                        Strategic HR Management (Certificate)
-                      </h4>
-                      <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
-                        Amity University (May 2024)
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Card 4 */}
-                  <div className="flex items-start gap-4 p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
-                    <div className="p-3 bg-purple-600 text-white rounded-xl shrink-0 mt-0.5 shadow-sm">
-                      <Award className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <h4 className="font-bold text-slate-900 dark:text-white text-sm sm:text-base">
-                        Harvard ManageMentor (Certificates)
-                      </h4>
-                      <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">
-                        Team Management | Decision Making | Presentation Skills | Business Plan Development | Strategy Planning & Execution
-                      </p>
-                    </div>
-                  </div>
-
+                    return (
+                      <div key={item.id || idx} className={`flex items-start gap-4 p-4 rounded-2xl border ${cardStyle}`}>
+                        <div className="p-3 bg-purple-600 text-white rounded-xl shrink-0 mt-0.5 shadow-sm">
+                          <IconComponent className="w-5 h-5" />
+                        </div>
+                        <div>
+                          <h4 className="font-bold text-slate-900 dark:text-white text-sm sm:text-base">
+                            {item.title}
+                          </h4>
+                          <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
+                            {item.institution} {item.status ? `(${item.status})` : ''} {item.year ? `(${item.year})` : ''}
+                          </p>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
               )}
 

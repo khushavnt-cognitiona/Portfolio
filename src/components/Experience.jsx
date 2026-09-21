@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Briefcase, MapPin, Calendar, CheckCircle2, MessageSquareQuote, Star, Send, Mail, ArrowRight, Shield, Layers } from 'lucide-react';
+import { Briefcase, MapPin, Calendar, CheckCircle2, MessageSquareQuote, Star, Send, Mail, ArrowRight, Shield, Layers, Loader2 } from 'lucide-react';
 import { FaLinkedin, FaGithub, FaJava, FaReact, FaDocker, FaAws } from 'react-icons/fa';
 import { SiSpringboot, SiMysql, SiGit, SiPostman, SiTailwindcss, SiJsonwebtokens } from 'react-icons/si';
-import { MOCK_EXPERIENCES, MOCK_TESTIMONIALS } from '../data/mockData';
+import { fetchExperience } from '../services/api';
+import { MOCK_TESTIMONIALS } from '../data/mockData';
 
 const techIconMap = {
   "Java": FaJava,
@@ -31,6 +32,23 @@ const skillsStack = [
 
 const Experience = () => {
   const [activeTestimonial] = useState(0);
+  const [experiences, setExperiences] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadExperiences = async () => {
+      try {
+        setLoading(true);
+        const data = await fetchExperience();
+        setExperiences(data || []);
+      } catch (err) {
+        console.error('Failed to load experiences:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadExperiences();
+  }, []);
 
   return (
     <section id="experience" className="py-20 bg-slate-50/60 dark:bg-slate-900/40 relative">
@@ -51,65 +69,76 @@ const Experience = () => {
               </h2>
             </div>
 
+            {/* Loading State */}
+            {loading && (
+              <div className="flex items-center justify-center py-12 text-indigo-600 dark:text-indigo-400 gap-2">
+                <Loader2 className="w-6 h-6 animate-spin" />
+                <span className="text-xs font-medium text-slate-500">Loading work experience from backend...</span>
+              </div>
+            )}
+
             {/* Vertical Timeline Container */}
-            <div className="relative pl-6 sm:pl-8 space-y-8 before:absolute before:left-[19px] sm:before:left-[27px] before:top-4 before:bottom-4 before:w-0.5 before:bg-gradient-to-b before:from-orange-500 before:to-cyan-500">
-              {MOCK_EXPERIENCES.map((exp, idx) => {
-                const isFirst = idx === 0;
-                return (
-                  <motion.div
-                    key={exp.id}
-                    initial={{ opacity: 0, x: -30 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.5, delay: idx * 0.15 }}
-                    className="relative group"
-                  >
-                    {/* Timeline Node Badge with Number */}
-                    <div className={`absolute -left-[37px] sm:-left-[45px] top-1 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white dark:bg-slate-900 border-2 ${
-                      isFirst ? 'border-orange-500 text-orange-600 dark:text-orange-400 shadow-orange-500/20' : 'border-cyan-500 text-cyan-600 dark:text-cyan-400 shadow-cyan-500/20'
-                    } flex items-center justify-center font-extrabold text-xs shadow-md group-hover:scale-110 transition-transform`}>
-                      0{idx + 1}
-                    </div>
+            {!loading && (
+              <div className="relative pl-6 sm:pl-8 space-y-8 before:absolute before:left-[19px] sm:before:left-[27px] before:top-4 before:bottom-4 before:w-0.5 before:bg-gradient-to-b before:from-orange-500 before:to-cyan-500">
+                {experiences.map((exp, idx) => {
+                  const isFirst = idx === 0;
+                  const responsibilities = Array.isArray(exp.responsibilities) ? exp.responsibilities : [];
+                  const technologies = Array.isArray(exp.technologies) ? exp.technologies : ["Java", "Spring Boot", "MySQL"];
+                  return (
+                    <motion.div
+                      key={exp.id || idx}
+                      initial={{ opacity: 0, x: -30 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.5, delay: idx * 0.15 }}
+                      className="relative group"
+                    >
+                      {/* Timeline Node Badge with Number */}
+                      <div className={`absolute -left-[37px] sm:-left-[45px] top-1 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white dark:bg-slate-900 border-2 ${
+                        isFirst ? 'border-orange-500 text-orange-600 dark:text-orange-400 shadow-orange-500/20' : 'border-cyan-500 text-cyan-600 dark:text-cyan-400 shadow-cyan-500/20'
+                      } flex items-center justify-center font-extrabold text-xs shadow-md group-hover:scale-110 transition-transform`}>
+                        0{idx + 1}
+                      </div>
 
-                    {/* Glassmorphic Experience Card */}
-                    <div className="p-6 rounded-3xl bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border border-slate-200/80 dark:border-slate-800 shadow-md hover:shadow-xl transition-all duration-300 group-hover:-translate-y-1">
-                      
-                      {/* Top Role & Company Row */}
-                      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2 pb-4 border-b border-slate-100 dark:border-slate-800">
-                        <div>
-                          <h3 className="text-lg sm:text-xl font-extrabold text-slate-900 dark:text-white">
-                            {exp.role}
-                          </h3>
-                          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1 text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400">
-                            <span className="text-indigo-600 dark:text-indigo-400">{exp.company}</span>
-                            <span>•</span>
-                            <span className="flex items-center gap-1">
-                              <MapPin className="w-3.5 h-3.5" />
-                              {exp.location}
-                            </span>
+                      {/* Glassmorphic Experience Card */}
+                      <div className="p-6 rounded-3xl bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border border-slate-200/80 dark:border-slate-800 shadow-md hover:shadow-xl transition-all duration-300 group-hover:-translate-y-1">
+                        
+                        {/* Top Role & Company Row */}
+                        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2 pb-4 border-b border-slate-100 dark:border-slate-800">
+                          <div>
+                            <h3 className="text-lg sm:text-xl font-extrabold text-slate-900 dark:text-white">
+                              {exp.role}
+                            </h3>
+                            <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1 text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400">
+                              <span className="text-indigo-600 dark:text-indigo-400">{exp.company}</span>
+                              <span>•</span>
+                              <span className="flex items-center gap-1">
+                                <MapPin className="w-3.5 h-3.5" />
+                                {exp.location || "Maharashtra, India"}
+                              </span>
+                            </div>
+                          </div>
+
+                          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold shrink-0 self-start sm:self-auto border shadow-2xs">
+                            <Calendar className="w-3.5 h-3.5" />
+                            <span>{exp.duration}</span>
                           </div>
                         </div>
 
-                        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold shrink-0 self-start sm:self-auto border shadow-2xs">
-                          <Calendar className="w-3.5 h-3.5" />
-                          <span>{exp.duration}</span>
+                        {/* Responsibilities List */}
+                        <div className="pt-4 space-y-2">
+                          {responsibilities.map((resp, rIdx) => (
+                            <div key={rIdx} className="flex items-start gap-2.5 text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                              <CheckCircle2 className={`w-4 h-4 mt-0.5 shrink-0 ${isFirst ? 'text-orange-500' : 'text-cyan-500'}`} />
+                              <span>{resp}</span>
+                            </div>
+                          ))}
                         </div>
-                      </div>
 
-                      {/* Responsibilities List */}
-                      <div className="pt-4 space-y-2">
-                        {exp.responsibilities.map((resp, rIdx) => (
-                          <div key={rIdx} className="flex items-start gap-2.5 text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
-                            <CheckCircle2 className={`w-4 h-4 mt-0.5 shrink-0 ${isFirst ? 'text-orange-500' : 'text-cyan-500'}`} />
-                            <span>{resp}</span>
-                          </div>
-                        ))}
-                      </div>
-
-                      {/* Technology Badges */}
-                      <div className="flex flex-wrap gap-2 pt-4 border-t border-slate-100 dark:border-slate-800/80 mt-4">
-                        {exp.technologies.map((tech) => {
-                          const IconComp = techIconMap[tech];
+                        {/* Technology Badges */}
+                        <div className="flex flex-wrap gap-2 pt-4 border-t border-slate-100 dark:border-slate-800/80 mt-4">
+                          {technologies.map((tech) => {
+                            const IconComp = techIconMap[tech];
                           return (
                             <span
                               key={tech}
@@ -127,6 +156,7 @@ const Experience = () => {
                 );
               })}
             </div>
+            )}
           </div>
 
           {/* Right Column: Premium Testimonial Card */}
@@ -257,7 +287,7 @@ const Experience = () => {
                 </a>
 
                 <a
-                  href="https://github.com/khushvantjadhao"
+                  href="https://github.com/khushavnt-cognitiona"
                   target="_blank"
                   rel="noreferrer"
                   className="flex items-center gap-2 px-5 py-3.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-sm border border-slate-700 shadow-md hover:-translate-y-0.5 transition-all"
@@ -267,7 +297,7 @@ const Experience = () => {
                 </a>
 
                 <a
-                  href="https://linkedin.com/in/khushvantjadhao"
+                  href="https://www.linkedin.com/in/khushvantjadhao"
                   target="_blank"
                   rel="noreferrer"
                   className="flex items-center gap-2 px-5 py-3.5 rounded-xl bg-blue-600/20 hover:bg-blue-600 text-blue-300 hover:text-white font-bold text-sm border border-blue-500/30 transition-colors"
@@ -377,20 +407,20 @@ const Experience = () => {
 
           {/* Contact Info Footer Bar */}
           <div className="mt-10 pt-6 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-4 text-xs text-slate-400 font-semibold">
-            <div className="flex items-center gap-2">
+            <a href="mailto:khusujadhao329@gmail.com" className="flex items-center gap-2 hover:text-indigo-300 transition-colors">
               <Mail className="w-4 h-4 text-indigo-400" />
-              <span>khushvantjadhao@gmail.com</span>
-            </div>
+              <span>khusujadhao329@gmail.com</span>
+            </a>
             <div className="flex items-center gap-2">
               <MapPin className="w-4 h-4 text-indigo-400" />
               <span>Pune, Maharashtra, India</span>
             </div>
             <div className="flex items-center gap-4 text-slate-300">
-              <a href="https://linkedin.com/in/khushvantjadhao" target="_blank" rel="noreferrer" className="hover:text-white transition-colors">
+              <a href="https://www.linkedin.com/in/khushvantjadhao" target="_blank" rel="noreferrer" className="hover:text-white transition-colors">
                 LinkedIn
               </a>
               <span>•</span>
-              <a href="https://github.com/khushvantjadhao" target="_blank" rel="noreferrer" className="hover:text-white transition-colors">
+              <a href="https://github.com/khushavnt-cognitiona" target="_blank" rel="noreferrer" className="hover:text-white transition-colors">
                 GitHub
               </a>
             </div>

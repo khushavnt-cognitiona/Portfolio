@@ -6,7 +6,7 @@ export const MOCK_PROJECTS = [
     image: "/images/project-job-portal.png",
     technologies: ["Java", "Spring Boot", "React", "MySQL"],
     demoUrl: "#",
-    githubUrl: "https://github.com/khushvantjadhao",
+    githubUrl: "https://github.com/khushavnt-cognitiona",
     accentColor: "from-indigo-500 to-purple-600"
   },
   {
@@ -16,7 +16,7 @@ export const MOCK_PROJECTS = [
     image: "/images/project-grocery.png",
     technologies: ["Java", "Spring Boot", "React", "MySQL"],
     demoUrl: "#",
-    githubUrl: "https://github.com/khushvantjadhao",
+    githubUrl: "https://github.com/khushavnt-cognitiona",
     accentColor: "from-emerald-500 to-teal-600"
   },
   {
@@ -26,7 +26,7 @@ export const MOCK_PROJECTS = [
     image: "/images/project-hotel.png",
     technologies: ["Java", "Spring Boot", "Thymeleaf", "MySQL"],
     demoUrl: "#",
-    githubUrl: "https://github.com/khushvantjadhao",
+    githubUrl: "https://github.com/khushavnt-cognitiona",
     accentColor: "from-amber-500 to-orange-600"
   }
 ];

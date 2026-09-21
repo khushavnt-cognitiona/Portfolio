@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Mail, MapPin, Send, CheckCircle2, AlertCircle } from 'lucide-react';
-import { FaLinkedin, FaGithub } from 'react-icons/fa';
+import { FaLinkedin, FaGithub, FaInstagram } from 'react-icons/fa';
 import { submitContactForm } from '../services/api';
 
 const Contact = () => {
@@ -65,12 +65,15 @@ const Contact = () => {
 
               {/* Direct Info List */}
               <div className="space-y-4 pt-2">
-                <div className="flex items-center gap-3 text-slate-200">
-                  <div className="p-2.5 rounded-xl bg-indigo-500/20 text-indigo-400 border border-indigo-500/30">
+                <a
+                  href="mailto:khusujadhao329@gmail.com"
+                  className="flex items-center gap-3 text-slate-200 hover:text-indigo-300 transition-colors group"
+                >
+                  <div className="p-2.5 rounded-xl bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 group-hover:scale-105 transition-transform">
                     <Mail className="w-5 h-5" />
                   </div>
-                  <span className="text-sm font-medium">khushvantjadhao@gmail.com</span>
-                </div>
+                  <span className="text-sm font-medium">khusujadhao329@gmail.com</span>
+                </a>
 
                 <div className="flex items-center gap-3 text-slate-200">
                   <div className="p-2.5 rounded-xl bg-indigo-500/20 text-indigo-400 border border-indigo-500/30">
@@ -84,20 +87,38 @@ const Contact = () => {
               <div className="pt-4 flex flex-wrap items-center justify-between gap-4 border-t border-slate-800">
                 <div className="flex items-center gap-3">
                   <a
-                    href="https://linkedin.com/in/khushvantjadhao"
+                    href="https://www.linkedin.com/in/khushvantjadhao"
                     target="_blank"
                     rel="noreferrer"
                     className="p-2.5 rounded-xl bg-blue-600/20 text-blue-400 hover:bg-blue-600 hover:text-white transition-colors border border-blue-500/30"
+                    aria-label="LinkedIn"
                   >
                     <FaLinkedin className="w-5 h-5" />
                   </a>
                   <a
-                    href="https://github.com/khushvantjadhao"
+                    href="https://github.com/khushavnt-cognitiona"
                     target="_blank"
                     rel="noreferrer"
                     className="p-2.5 rounded-xl bg-slate-800 text-slate-200 hover:bg-white hover:text-slate-900 transition-colors border border-slate-700"
+                    aria-label="GitHub"
                   >
                     <FaGithub className="w-5 h-5" />
+                  </a>
+                  <a
+                    href="https://www.instagram.com/engineer_khushvant/"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="p-2.5 rounded-xl bg-pink-600/20 text-pink-400 hover:bg-pink-600 hover:text-white transition-colors border border-pink-500/30"
+                    aria-label="Instagram"
+                  >
+                    <FaInstagram className="w-5 h-5" />
+                  </a>
+                  <a
+                    href="mailto:khusujadhao329@gmail.com"
+                    className="p-2.5 rounded-xl bg-indigo-600/20 text-indigo-400 hover:bg-indigo-600 hover:text-white transition-colors border border-indigo-500/30"
+                    aria-label="Email"
+                  >
+                    <Mail className="w-5 h-5" />
                   </a>
                 </div>
               </div>

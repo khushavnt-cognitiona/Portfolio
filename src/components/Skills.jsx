@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import {
   Wrench,
@@ -19,10 +19,12 @@ import {
   FileCode,
   Cpu,
   Package,
-  MoreHorizontal
+  MoreHorizontal,
+  Loader2,
+  AlertCircle
 } from 'lucide-react';
 import { FaGithub } from 'react-icons/fa';
-import { MOCK_SKILLS } from '../data/mockData';
+import { fetchSkills } from '../services/api';
 
 const iconMap = {
   Coffee,
@@ -46,13 +48,33 @@ const iconMap = {
 };
 
 const Skills = () => {
+  const [skills, setSkills] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState('All');
+
+  useEffect(() => {
+    const loadSkills = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const data = await fetchSkills();
+        setSkills(data || []);
+      } catch (err) {
+        console.error('Failed to load skills:', err);
+        setError('Unable to load skills.');
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadSkills();
+  }, []);
 
   const categories = ['All', 'Frontend', 'Backend', 'Database', 'Tools & Cloud'];
 
   const filteredSkills = selectedCategory === 'All'
-    ? MOCK_SKILLS
-    : MOCK_SKILLS.filter(s => s.category === selectedCategory);
+    ? skills
+    : skills.filter(s => s.category === selectedCategory);
 
   return (
     <section id="skills" className="py-20 relative bg-slate-50/50 dark:bg-slate-900/30">
@@ -96,48 +118,66 @@ const Skills = () => {
           })}
         </div>
 
+        {/* Loading State */}
+        {loading && (
+          <div className="flex flex-col items-center justify-center py-12 text-indigo-600 dark:text-indigo-400 space-y-2">
+            <Loader2 className="w-7 h-7 animate-spin" />
+            <span className="text-xs font-medium text-slate-500">Loading skills from backend...</span>
+          </div>
+        )}
+
+        {/* Error State */}
+        {!loading && error && skills.length === 0 && (
+          <div className="p-4 rounded-xl bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400 text-center text-xs font-semibold">
+            {error}
+          </div>
+        )}
+
         {/* Technology Cards Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-4">
-          {filteredSkills.map((skill, idx) => {
-            const IconComponent = iconMap[skill.icon] || Code;
-            return (
-              <motion.div
-                key={skill.id}
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.3, delay: idx * 0.03 }}
-                whileHover={{ y: -5 }}
-                className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs hover:shadow-lg transition-all duration-300 flex flex-col items-center justify-center text-center group cursor-pointer"
-              >
-                <div
-                  className="w-12 h-12 rounded-xl flex items-center justify-center mb-3 transition-transform group-hover:scale-110"
-                  style={{ backgroundColor: `${skill.color}15`, color: skill.color }}
+        {!loading && filteredSkills.length > 0 && (
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-4">
+            {filteredSkills.map((skill, idx) => {
+              const IconComponent = iconMap[skill.icon] || Code;
+              const skillColor = skill.color || '#6366F1';
+              return (
+                <motion.div
+                  key={skill.id || idx}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.3, delay: idx * 0.03 }}
+                  whileHover={{ y: -5 }}
+                  className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs hover:shadow-lg transition-all duration-300 flex flex-col items-center justify-center text-center group cursor-pointer"
                 >
-                  <IconComponent className="w-6 h-6" />
+                  <div
+                    className="w-12 h-12 rounded-xl flex items-center justify-center mb-3 transition-transform group-hover:scale-110"
+                    style={{ backgroundColor: `${skillColor}15`, color: skillColor }}
+                  >
+                    <IconComponent className="w-6 h-6" />
+                  </div>
+                  <span className="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
+                    {skill.name}
+                  </span>
+                </motion.div>
+              );
+            })}
+
+            {/* "More..." Card */}
+            {selectedCategory === 'All' && (
+              <motion.div
+                whileHover={{ y: -5 }}
+                className="p-5 rounded-2xl bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 shadow-xs flex flex-col items-center justify-center text-center cursor-pointer"
+              >
+                <div className="w-12 h-12 rounded-xl bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 flex items-center justify-center mb-3">
+                  <MoreHorizontal className="w-6 h-6" />
                 </div>
-                <span className="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
-                  {skill.name}
+                <span className="text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-300">
+                  More
                 </span>
               </motion.div>
-            );
-          })}
-
-          {/* "More..." Card matching reference image */}
-          {selectedCategory === 'All' && (
-            <motion.div
-              whileHover={{ y: -5 }}
-              className="p-5 rounded-2xl bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 shadow-xs flex flex-col items-center justify-center text-center cursor-pointer"
-            >
-              <div className="w-12 h-12 rounded-xl bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 flex items-center justify-center mb-3">
-                <MoreHorizontal className="w-6 h-6" />
-              </div>
-              <span className="text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-300">
-                More
-              </span>
-            </motion.div>
-          )}
-        </div>
+            )}
+          </div>
+        )}
 
       </div>
     </section>
@@ -145,3 +185,5 @@ const Skills = () => {
 };
 
 export default Skills;
+
+
