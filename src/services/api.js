@@ -7,14 +7,15 @@ import {
   MOCK_CERTIFICATIONS
 } from '../data/mockData';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api';
+const RAW_URL = import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL || 'https://portfolio-backend-1-0xyc.onrender.com';
+const API_BASE_URL = RAW_URL.endsWith('/api') ? RAW_URL : `${RAW_URL.replace(/\/$/, '')}/api`;
 
 const api = axios.create({
   baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
-  timeout: 5000,
+  timeout: 10000,
 });
 
 export const fetchProjects = async () => {
@@ -76,3 +77,27 @@ export const submitContactForm = async (contactData) => {
     return { success: true, message: 'Thank you! Message submitted successfully.' };
   }
 };
+
+export const getResumeDownloadUrl = () => `${API_BASE_URL}/resume/download`;
+
+export const downloadResume = async () => {
+  try {
+    const response = await api.get('/resume/download', {
+      responseType: 'blob',
+    });
+
+    const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }));
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', 'Khushwant_Jadhao_CV.pdf');
+    document.body.appendChild(link);
+    link.click();
+    link.parentNode.removeChild(link);
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error('Failed to download CV via API:', error);
+    // Direct browser navigation trigger
+    window.open(getResumeDownloadUrl(), '_blank');
+  }
+};
+

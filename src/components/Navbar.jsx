@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Download, Menu, X } from 'lucide-react';
+import { downloadResume } from '../services/api';
 
 const Navbar = () => {
   const [activeSection, setActiveSection] = useState('home');
@@ -92,14 +93,13 @@ const Navbar = () => {
         {/* Right Actions */}
         <div className="hidden md:flex items-center">
           {/* Download CV Button */}
-          <a
-            href="#contact"
-            onClick={(e) => { e.preventDefault(); scrollTo('contact'); }}
+          <button
+            onClick={downloadResume}
             className="flex items-center gap-2 px-5 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold text-sm shadow-md shadow-blue-500/25 hover:shadow-indigo-500/35 hover:-translate-y-0.5 transition-all duration-200"
           >
             <Download className="w-4 h-4" />
             <span>Download CV</span>
-          </a>
+          </button>
         </div>
 
         {/* Mobile Toggle Button */}
@@ -130,14 +130,13 @@ const Navbar = () => {
             </button>
           ))}
           <div className="pt-2">
-            <a
-              href="#contact"
-              onClick={(e) => { e.preventDefault(); scrollTo('contact'); }}
+            <button
+              onClick={() => { setMobileMenuOpen(false); downloadResume(); }}
               className="flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold text-sm shadow-md"
             >
               <Download className="w-4 h-4" />
               <span>Download CV</span>
-            </a>
+            </button>
           </div>
         </div>
       )}
